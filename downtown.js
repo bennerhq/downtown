@@ -146,18 +146,19 @@ function Downtown(id_field, id_score, id_hi) {
 		if (this.paused) {
 			this.pauseToggle();
 		}
-	
-		left = Math.round(parseInt(this.ship.style.left) / BOX_WIDTH) * BOX_WIDTH;
+		else {	
+			left = Math.round(parseInt(this.ship.style.left) / BOX_WIDTH) * BOX_WIDTH;
 
-		this.bomb = document.createElement("div");
-		this.bomb.id = "bomb";
-		this.bomb.style.left = left + "px";
-		this.bomb.style.top = this.ship.style.top;
-		this.bomb.style.width = (BOX_WIDTH - 2) + "px";
-		this.bomb.style.height = (BOX_HEIGHT) + "px";
-		this.bomb.style.position = "absolute";
-		this.bomb.style.backgroundColor = "black";
-		this.field.appendChild(this.bomb);
+			this.bomb = document.createElement("div");
+			this.bomb.id = "bomb";
+			this.bomb.style.left = left + "px";
+			this.bomb.style.top = this.ship.style.top;
+			this.bomb.style.width = (BOX_WIDTH - 2) + "px";
+			this.bomb.style.height = (BOX_HEIGHT) + "px";
+			this.bomb.style.position = "absolute";
+			this.bomb.style.backgroundColor = "black";
+			this.field.appendChild(this.bomb);
+		}
 	}
 
 	this.action = function() {
