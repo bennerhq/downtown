@@ -18,7 +18,7 @@ function Downtown(id_field, id_score, id_hi) {
 	var ANIMATION_DELTA = 2;
 
 	var PCT_MIN = 0.3;
-	var PCT_MAX = 0.9;
+	var PCT_MAX = 0.6;
 	var PCT_BONUS = 0.07;
 
    	this.heartbeat =
@@ -81,27 +81,25 @@ function Downtown(id_field, id_score, id_hi) {
 		return this.paused;
 	}
 
-	this.clear = function() {
-		if (this.field != null) {
-			this.field.innerHTML = '';	
-		}
+	this.isActive = function() {
+		return isPaused() || isRunning();
+	}
+
+	this.next = function() {
 		this.setHeartbeat(false);	
+		this.field.innerHTML = '';	
 		this.ship = this.bomb = this.bonus = null;
 		this.bonus_count = 0;
 		this.count = 0;
 		this.paused = false;
 		this.text_score.innerHTML = this.score;
 		this.text_hi.innerHTML = this.hi;
-	}
-
-	this.next = function() {
-		this.clear();
 
 		this.field_width = this.field.clientWidth;
 		this.field_height = this.field.clientHeight;
 
 		var space_min = Math.floor(this.field_height * PCT_MIN);
-    		var space_max = Math.floor(this.field_height * PCT_MAX) - space_min;
+    		var space_max = Math.floor(this.field_height * PCT_MAX);
 
     		for (this.count=0;
 		     this.count < Math.floor(this.field_width / BOX_WIDTH); 
@@ -188,14 +186,14 @@ function Downtown(id_field, id_score, id_hi) {
 			}
 		}
 		else if (Math.random() < PCT_BONUS) {
-			var j = Math.floor(this.field_width / BOX_WIDTH);
+			var w = Math.floor(this.field_width / BOX_WIDTH);
 			do {
-				var id = "b" + Math.floor(Math.random() * j); 
+				var id = "b" + Math.floor(Math.random() * w); 
 				this.bonus = document.getElementById(id);
 			}
 			while (this.bonus.style.display == "none")
 			this.bonus.style.backgroundColor = "darkgray";
-			this.bonus_count = j * BOX_WIDTH / 2;
+			this.bonus_count = w * BOX_WIDTH / 2;
 		}
 
 		if (this.bomb != null) { 
@@ -224,6 +222,7 @@ function Downtown(id_field, id_score, id_hi) {
 
 					this.count -= 1;
 					if (this.count == 0) {
+						this.score += 5 * Math.floor((this.field_height - top) / BOX_HEIGHT);
 						this.next();
 					}
 				}
