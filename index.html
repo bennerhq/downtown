@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+
+  <title>bennerhq.com</title>
+
+  <style type="text/css">
+    body {
+      background-color: white;
+      color: black;
+    }
+    .body {
+    }
+
+    .logo {
+      font: 61.0px Helvetica;
+      font-weight: bold;
+      font-style: italic;
+      margin-left: 30px;
+      margin-top: 30px;
+      letter-spacing: -4px;
+      cursor: pointer;
+    }
+
+    .contact {
+      font: 17.0px Helvetica;
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      color: darkgray;
+
+      border-top-style: solid;
+      border-top-color: #F0F0F0;
+      border-top-width: 1px;
+      padding-top: 5px;
+    }
+    .name {
+      display: inline-block;
+      font-style: italic;
+      border-right-width: 1px;
+      border-right-style: solid;
+      border-color: #F0F0F0;
+      padding-right: 10px;
+    }
+    .phone {
+      display: inline-block;
+      font-style: italic;
+      border-right-width: 1px;
+      border-right-style: solid;
+      border-color: #F0F0F0;
+      padding-right: 10px;
+    }
+    .email {
+      display: inline-block;
+      font-style: italic;
+    }
+
+    span.high {
+      color: gray;
+    }
+    span.hq {
+      color: #CD0403; /* dark red */
+    }
+    span.hq:hover {
+      cursor: default;
+      color: gray;
+    }
+
+    #game {
+      position: relative;
+      width: 596px;
+      height: 350px;
+      margin: 0px auto;
+      display: none;
+    }
+    #field {
+      width: 100%;
+      height: 100%;
+    }
+    .info {
+      margin-top: 5px;
+      margin-right: 2px;
+      padding-top: 3px;
+      border-top-style: solid;
+      border-top-width: 1px;
+      border-top-color: #F0F0F0;
+    }
+    .score {
+      float: left;
+      font: 13.0px Helvetica;
+      color: darkgray;
+    }
+    .hi {
+      float: right;
+      font: 13.0px Helvetica;
+      color: darkgray;
+    }
+  </style>
+ 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="js/downtown.js"></script>
+
+  <script>
+    var dn = null;
+    var game = null;
+
+    function dn_start() {
+      if (dn == null) return;
+
+      if (game == null) {
+        game = document.getElementById('game');
+      }
+      game.style.display = 'block';
+      dn.start();
+    }
+
+    function dn_hide() {
+      if (game == null) return;
+
+      if (game.style.display == 'none') {
+        game.style.display = 'block';
+        if (dn.isPaused()) {
+          dn.pauseToggle();
+        }
+      }
+      else {
+        game.style.display = 'none';
+        if (dn.isRunning()) {
+          dn.pauseToggle();
+        }
+      }
+    }
+
+    function dn_pause() {
+      if (game == null) return;
+
+      if (game.style.display != 'none') {
+        dn.pauseToggle();
+      }
+    }
+
+    $(document).ready(function() {
+      dn = new Downtown('field', 'score', 'hi');
+   });
+  </script>
+
+</head>
+  
+  <body class="bg">
+    <div class="logo">
+      <span onmousedown="dn_hide()">benner</span><span class="hq" onmousedown="dn_start()">hq</span><span onmousedown="dn_pause()">.com</span>
+    </div>
+
+    <div id="game">
+      <div id="field"></div>
+      <div class="info">
+        <div class='score'>Score: <span id='score'></span></div>
+        <div class='hi'>Hi: <span id='hi'></span></div>
+      </div>
+    </div>
+
+    <div class="contact">
+      <div class="name">
+        jens kaas benner,
+        <a href="http://dk.linkedin.com/in/jenskaasbenner"><span class="high">cv</span></a> 
+      </div>
+      <div class="phone">
+         <span class="high">m:</span> +45.20.911.103
+      </div>
+      <div class="email">
+         <span class="high">e:</span> jens@bennerhq.com
+      </div>
+    </div>
+  </body>
+</html>
