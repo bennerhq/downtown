@@ -40,15 +40,9 @@ function Downtown(id_field, id_score, id_hi) {
 	this.text_hi = document.getElementById(id_hi);
 
 	var _this_shoot_= this;
-        this.shoot_trigger = function() {
-		if (_this_shoot_.paused) {
-			_this_shoot_.pauseToggle();
-		}
-		_this_shoot_.shoot();
-        }
-	document.onkeypress = this.shoot_trigger;
-	document.ontouchstart = this.shoot_trigger;
-	
+	document.onkeypress = function() { _this_shoot_.shoot(); }
+	document.ontouchstart = function() { _this_shoot_.shoot(); }
+
 	this.start = function() {
 		this.animation = ANIMATION_MAX + ANIMATION_DELTA;
 		this.score = 0;
@@ -149,6 +143,10 @@ function Downtown(id_field, id_score, id_hi) {
 	this.shoot = function() {
 		if (this.bomb != null) return;
 
+		if (this.paused) {
+			this.pauseToggle();
+		}
+	
 		left = Math.round(parseInt(this.ship.style.left) / BOX_WIDTH) * BOX_WIDTH;
 
 		this.bomb = document.createElement("div");
