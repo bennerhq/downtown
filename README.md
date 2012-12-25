@@ -6,6 +6,7 @@ the classic game downtown written in javascript
 
 license
 =======
+
 /*
  *  ----------------------------------------------------------------------------
  * "THE BEER-WARE LICENSE" (Revision 42):
