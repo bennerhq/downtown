@@ -3,7 +3,7 @@
  * "THE BEER-WARE LICENSE" (Revision 42):
  * <jens@bennerhq.com> wrote this file. As long as you retain this notice you
  * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return Jens Kaas Benner
+ * this stuff is worth it, you can buy me a beer in return. /benner
  *
  * Origin: http://people.freebsd.org/~phk/
  * ----------------------------------------------------------------------------
@@ -101,25 +101,25 @@ function Downtown(id_field, id_score, id_hi) {
 		var space_min = Math.floor(this.field_height * PCT_MIN);
     		var space_max = Math.floor(this.field_height * PCT_MAX);
 
-    		for (this.count=0;
-		     this.count < Math.floor(this.field_width / BOX_WIDTH); 
-		     this.count++) {
-			var h = this.field_height - space_min - 
-		       		Math.floor(Math.random() * space_max / BOX_HEIGHT) * BOX_HEIGHT;
-		
-			var div = document.createElement('div');
-			div.id = 'b' + this.count;
-			div.style.left = (this.count * BOX_WIDTH) + 'px';
-			div.style.top = h + 'px';
-			div.style.width = (BOX_WIDTH - 4) + 'px';
-			div.style.height = (this.field_height - h - 2) + 'px';
-			div.style.borderStyle = 'solid';
-			div.style.borderWidth = '1px';
-			div.style.position = 'absolute';
-			div.style.borderColor = 'darkgray';
-			field.appendChild(div);
+		this.count = Math.floor(this.field_width / BOX_WIDTH);
+    		for (var i=0; i < this.count; i++) {
+			var h = Math.floor(Math.random() * space_max / BOX_HEIGHT) * BOX_HEIGHT;
+			h = this.field_height - space_min - h;
+	
+			var block = document.createElement('div');
+			block.id = 'b' + i;
+			block.style.left = (i * BOX_WIDTH) + 'px';
+			block.style.top = h + 'px';
+			block.style.width = (BOX_WIDTH - 4) + 'px';
+			block.style.height = (this.field_height - h - 2) + 'px';
+			block.style.borderStyle = 'solid';
+			block.style.borderWidth = '1px';
+			block.style.position = 'absolute';
+			block.style.borderColor = 'darkgray';
+			field.appendChild(block);
     		}
 
+		this.dir = 1;
 		this.ship = document.createElement('div');
 		this.ship.id = 'ship';
 		this.ship.style.left = 0;
@@ -129,7 +129,6 @@ function Downtown(id_field, id_score, id_hi) {
 		this.ship.style.position = 'absolute';
 		this.ship.style.backgroundColor = '#CD0403';
 		field.appendChild(this.ship);
-		this.dir = 1;
 
 		this.bomb = document.createElement('div');
 		this.bomb.id = 'bomb';
