@@ -24,7 +24,7 @@ function Downtown(id_field, id_score, id_hi) {
    	this.heartbeat =
     	this.ship =
    	this.bomb =
-   	this.bonus = null;
+	this.bonus = null;
 
         this.animation = 
 	this.dir = 
@@ -60,6 +60,18 @@ function Downtown(id_field, id_score, id_hi) {
 		}
 	}
 
+	this.isRunning = function() {
+		return this.heartbeat != null;
+	}
+
+	this.isPaused = function() {
+		return this.paused;
+	}
+
+	this.isActive = function() {
+		return isPaused() || isRunning();
+	}
+
 	this.setHeartbeat = function(run) {
 		if (this.heartbeat != null) {
 			clearInterval(this.heartbeat);
@@ -73,24 +85,13 @@ function Downtown(id_field, id_score, id_hi) {
 		}
 	}
 
-	this.isRunning = function() {
-		return this.heartbeat != null;
-	}
-
-	this.isPaused = function() {
-		return this.paused;
-	}
-
-	this.isActive = function() {
-		return isPaused() || isRunning();
-	}
+	var blocks = null;
 
 	this.next = function() {
 		this.setHeartbeat(false);	
 		this.field.innerHTML = '';	
-		this.ship = this.bomb = this.bonus = null;
+		this.bonus = null;
 		this.bonus_count = 0;
-		this.count = 0;
 		this.paused = false;
 		this.text_score.innerHTML = this.score;
 		this.text_hi.innerHTML = this.hi;
@@ -101,23 +102,24 @@ function Downtown(id_field, id_score, id_hi) {
 		var space_min = Math.floor(this.field_height * PCT_MIN);
     		var space_max = Math.floor(this.field_height * PCT_MAX);
 
+		this.blocks = new Array();
 		this.count = Math.floor(this.field_width / BOX_WIDTH);
     		for (var i=0; i < this.count; i++) {
 			var h = Math.floor(Math.random() * space_max / BOX_HEIGHT) * BOX_HEIGHT;
-			h = this.field_height - space_min - h;
-	
+			this.blocks[i] = this.field_height - space_min - h;
+
 			var block = document.createElement('div');
 			block.id = 'b' + i;
 			block.style.left = (i * BOX_WIDTH) + 'px';
-			block.style.top = h + 'px';
+			block.style.top = (this.field_height - 2) + 'px';
 			block.style.width = (BOX_WIDTH - 4) + 'px';
-			block.style.height = (this.field_height - h - 2) + 'px';
+			block.style.height = '0px';
 			block.style.borderStyle = 'solid';
 			block.style.borderWidth = '1px';
 			block.style.position = 'absolute';
 			block.style.borderColor = 'darkgray';
-			field.appendChild(block);
-    		}
+			this.field.appendChild(block); 
+		}
 
 		this.dir = 1;
 		this.ship = document.createElement('div');
@@ -128,7 +130,7 @@ function Downtown(id_field, id_score, id_hi) {
 		this.ship.style.height = (BOX_HEIGHT) + 'px';
 		this.ship.style.position = 'absolute';
 		this.ship.style.backgroundColor = '#CD0403';
-		field.appendChild(this.ship);
+		this.field.appendChild(this.ship);
 
 		this.bomb = document.createElement('div');
 		this.bomb.id = 'bomb';
@@ -146,6 +148,7 @@ function Downtown(id_field, id_score, id_hi) {
 			this.animation = ANIMATION_MAX;
 		}
 		this.setHeartbeat(true);
+
 	}
 
 	this.shoot = function() {
@@ -155,15 +158,26 @@ function Downtown(id_field, id_score, id_hi) {
 			this.pauseToggle();
 		}
 		else {	
-			left = Math.round(parseInt(this.ship.style.left) / BOX_WIDTH) * BOX_WIDTH;
-
-			this.bomb.style.left = left + 'px';
-			this.bomb.style.top = this.ship.style.top;
 			this.bomb.style.display = 'block';
+			this.bomb.style.left = Math.round(parseInt(this.ship.style.left) / BOX_WIDTH) * BOX_WIDTH + 'px';
+			this.bomb.style.top = this.ship.style.top;
 		}
 	}
 
 	this.action = function() {
+		if (this.blocks != null) {
+			for (var i=0; i < this.blocks.length; i++) {
+				var block = document.getElementById('b' + i); 
+				block.style.top = this.blocks[i] + 'px';
+				block.style.height = (this.field_height - this.blocks[i] - 2) + 'px';
+				block.style.transition =
+				block.style.MozYransition =
+				block.style.WebkitTransition =
+				block.style.OTransition = 'top 1s, height 1s';
+			}
+			this.blocks = null;
+		}
+
 		var left = parseInt(this.ship.style.left) + 2 * this.dir;
 		if (left == 0) {
 			this.dir = 1;
@@ -180,6 +194,7 @@ function Downtown(id_field, id_score, id_hi) {
 				this.text_hi.innerHTML = this.hi = this.score;
 			}
 			this.setHeartbeat(false);
+			return;
 		}
 
 		if (this.bonus != null) {
@@ -192,8 +207,7 @@ function Downtown(id_field, id_score, id_hi) {
 		else if (Math.random() < PCT_BONUS) {
 			var w = Math.floor(this.field_width / BOX_WIDTH);
 			do {
-				var id = 'b' + Math.floor(Math.random() * w); 
-				this.bonus = document.getElementById(id);
+				this.bonus = document.getElementById('b' + Math.floor(Math.random() * w));
 			}
 			while (this.bonus.style.display == 'none')
 			this.bonus.style.backgroundColor = 'darkgray';
@@ -203,9 +217,13 @@ function Downtown(id_field, id_score, id_hi) {
 		if (this.bomb.style.display == 'block') { 
 			var top = parseInt(this.bomb.style.top) + 2;
 
-			var id = 'b' + Math.floor(parseInt(this.bomb.style.left) / BOX_WIDTH);
-			var block = document.getElementById(id);
+			var block = document.getElementById('b' + Math.floor(parseInt(this.bomb.style.left) / BOX_WIDTH));
 			if (top > parseInt(block.style.top)) {
+				block.style.transition = 
+				block.style.MozYransition = 
+				block.style.WebkitTransition =
+				block.style.OTransition = '';
+				
 				block.style.top = top + 'px';
 				block.style.height = (this.field_height - top - 2) + 'px';
 			}
