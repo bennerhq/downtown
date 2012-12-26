@@ -24,6 +24,7 @@ function Downtown(id_field, id_score, id_hi) {
    	this.heartbeat =
     	this.ship =
    	this.bomb =
+   	this.blocks =
 	this.bonus = null;
 
         this.animation = 
@@ -84,8 +85,6 @@ function Downtown(id_field, id_score, id_hi) {
 			this.heartbeat = setInterval(function() { _this_action_.action(); }, this.animation);
 		}
 	}
-
-	var blocks = null;
 
 	this.next = function() {
 		this.setHeartbeat(false);	
