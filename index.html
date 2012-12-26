@@ -44,6 +44,9 @@
       border-color: #F0F0F0;
       padding-right: 10px;
     }
+    #github {
+      display: none;
+    }
     .phone {
       display: inline-block;
       font-style: italic;
@@ -100,17 +103,20 @@
   </style>
  
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script src="downtown.js"></script>
+  <script src="js/downtown.js"></script>
 
   <script>
     var dn = null;
     var game = null;
+    var github = null;
 
     function dn_start() {
       if (dn == null) return;
 
       if (game == null) {
         game = document.getElementById('game');
+        github = document.getElementById('github');
+        github.style.display = 'inline-block';
       }
       game.style.display = 'block';
       dn.start();
@@ -121,12 +127,14 @@
 
       if (game.style.display == 'none') {
         game.style.display = 'block';
+        github.style.display = 'inline-block';
         if (dn.isPaused()) {
           dn.pauseToggle();
         }
       }
       else {
         game.style.display = 'none';
+        github.style.display = 'none';
         if (dn.isRunning()) {
           dn.pauseToggle();
         }
@@ -164,7 +172,7 @@
     <div class="contact">
       <div class="name">
         jens kaas benner,
-        <a href="http://dk.linkedin.com/in/jenskaasbenner"><span class="high">cv</span></a> 
+        <a href="http://dk.linkedin.com/in/jenskaasbenner"><span class="high">cv</span></a><span id="github">, <a href="https://github.com/bennerhq">github</a></span>
       </div>
       <div class="phone">
          <span class="high">m:</span> +45.20.911.103
