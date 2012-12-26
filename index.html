@@ -113,12 +113,9 @@
     function dn_start() {
       if (dn == null) return;
 
-      if (game == null) {
-        game = document.getElementById('game');
-        github = document.getElementById('github');
-        github.style.display = 'inline-block';
-      }
       game.style.display = 'block';
+      github.style.display = 'inline-block';
+
       dn.start();
     }
 
@@ -128,13 +125,15 @@
       if (game.style.display == 'none') {
         game.style.display = 'block';
         github.style.display = 'inline-block';
-        if (dn.isPaused()) {
+ 
+       if (dn.isPaused()) {
           dn.pauseToggle();
         }
       }
       else {
         game.style.display = 'none';
         github.style.display = 'none';
+
         if (dn.isRunning()) {
           dn.pauseToggle();
         }
@@ -150,8 +149,11 @@
     }
 
     $(document).ready(function() {
+      game = document.getElementById('game');
+      github = document.getElementById('github');
+
       dn = new Downtown('field', 'score', 'hi');
-   });
+  });
   </script>
 
 </head>
