@@ -27,7 +27,7 @@ function Downtown(id_field, id_score, id_hi) {
 	this.bonus = null;
 
         this.animation = 
-	this.dir = 
+	this.ship_dir = 
 	this.score =
 	this.hi =
 	this.count =
@@ -88,10 +88,11 @@ function Downtown(id_field, id_score, id_hi) {
 
 	this.next = function() {
 		this.setHeartbeat(false);	
-		this.field.innerHTML = '';	
+
 		this.bonus = null;
 		this.bonus_count = 0;
 		this.paused = false;
+		this.field.innerHTML = '';	
 		this.text_score.innerHTML = this.score;
 		this.text_hi.innerHTML = this.hi;
 
@@ -107,10 +108,10 @@ function Downtown(id_field, id_score, id_hi) {
 			block.style.top = (this.field_height - 2) + 'px';
 			block.style.width = (BOX_WIDTH - 4) + 'px';
 			block.style.height = '0px';
+			block.style.borderColor = 'darkgray';
 			block.style.borderStyle = 'solid';
 			block.style.borderWidth = '1px';
 			block.style.position = 'absolute';
-			block.style.borderColor = 'darkgray';
 			block.style.transition =
 			block.style.MozTransition =
 			block.style.WebkitTransition =
@@ -118,7 +119,7 @@ function Downtown(id_field, id_score, id_hi) {
 			this.field.appendChild(block); 
 		}
 
-		this.dir = 1;
+		this.ship_dir = 1;
 		this.ship = document.createElement('div');
 		this.ship.id = 'ship';
 		this.ship.style.left = 0;
@@ -177,13 +178,13 @@ function Downtown(id_field, id_score, id_hi) {
 			}
 		}
 
-		var left = parseInt(this.ship.style.left) + 2 * this.dir;
+		var left = parseInt(this.ship.style.left) + 2 * this.ship_dir;
 		if (left == 0) {
-			this.dir = 1;
+			this.ship_dir = 1;
 			this.ship.style.top = (parseInt(this.ship.style.top) + BOX_HEIGHT) + 'px';
 		}
 		else if (left + BOX_WIDTH >= this.field_width) {
-			this.dir = -1;
+			this.ship_dir = -1;
 		}
 		this.ship.style.left = left + 'px';
 
