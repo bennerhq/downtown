@@ -24,7 +24,6 @@ function Downtown(id_field, id_score, id_hi) {
    	this.heartbeat =
     	this.ship =
    	this.bomb =
-   	this.blocks =
 	this.bonus = null;
 
         this.animation = 
@@ -34,6 +33,7 @@ function Downtown(id_field, id_score, id_hi) {
 	this.count =
 	this.bonus_count = 0;
 
+	this.first =
 	this.paused = false;
 
 	this.field = document.getElementById(id_field);
@@ -98,15 +98,9 @@ function Downtown(id_field, id_score, id_hi) {
 		this.field_width = this.field.clientWidth;
 		this.field_height = this.field.clientHeight;
 
-		var space_min = Math.floor(this.field_height * PCT_MIN);
-    		var space_max = Math.floor(this.field_height * PCT_MAX);
-
-		this.blocks = new Array();
+		this.first = true;
 		this.count = Math.floor(this.field_width / BOX_WIDTH);
     		for (var i=0; i < this.count; i++) {
-			var h = Math.floor(Math.random() * space_max / BOX_HEIGHT) * BOX_HEIGHT;
-			this.blocks[i] = this.field_height - space_min - h;
-
 			var block = document.createElement('div');
 			block.id = 'b' + i;
 			block.style.left = (i * BOX_WIDTH) + 'px';
@@ -117,6 +111,10 @@ function Downtown(id_field, id_score, id_hi) {
 			block.style.borderWidth = '1px';
 			block.style.position = 'absolute';
 			block.style.borderColor = 'darkgray';
+			block.style.transition =
+			block.style.MozTransition =
+			block.style.WebkitTransition =
+			block.style.OTransition = 'top 1s, height 1s';
 			this.field.appendChild(block); 
 		}
 
@@ -147,7 +145,6 @@ function Downtown(id_field, id_score, id_hi) {
 			this.animation = ANIMATION_MAX;
 		}
 		this.setHeartbeat(true);
-
 	}
 
 	this.shoot = function() {
@@ -164,17 +161,20 @@ function Downtown(id_field, id_score, id_hi) {
 	}
 
 	this.action = function() {
-		if (this.blocks != null) {
-			for (var i=0; i < this.blocks.length; i++) {
+		if (this.first) {
+			this.first = false;
+
+			var space_min = Math.floor(this.field_height * PCT_MIN);
+	    		var space_max = Math.floor(this.field_height * PCT_MAX);
+
+			for (var i=0; i < Math.floor(this.field_width / BOX_WIDTH); i++) {
+				var h = Math.floor(Math.random() * space_max / BOX_HEIGHT) * BOX_HEIGHT;
+				h = this.field_height - space_min - h;
+
 				var block = document.getElementById('b' + i); 
-				block.style.top = this.blocks[i] + 'px';
-				block.style.height = (this.field_height - this.blocks[i] - 2) + 'px';
-				block.style.transition =
-				block.style.MozYransition =
-				block.style.WebkitTransition =
-				block.style.OTransition = 'top 1s, height 1s';
+				block.style.top = h + 'px';
+				block.style.height = (this.field_height - h - 2) + 'px';
 			}
-			this.blocks = null;
 		}
 
 		var left = parseInt(this.ship.style.left) + 2 * this.dir;
@@ -219,7 +219,7 @@ function Downtown(id_field, id_score, id_hi) {
 			var block = document.getElementById('b' + Math.floor(parseInt(this.bomb.style.left) / BOX_WIDTH));
 			if (top > parseInt(block.style.top)) {
 				block.style.transition = 
-				block.style.MozYransition = 
+				block.style.MozTransition = 
 				block.style.WebkitTransition =
 				block.style.OTransition = '';
 				
