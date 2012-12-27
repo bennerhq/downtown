@@ -1,259 +1,187 @@
-/*
- *  ----------------------------------------------------------------------------
- * "THE BEER-WARE LICENSE" (Revision 42):
- * <jens@bennerhq.com> wrote this file. As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return. /benner
- *
- * Origin: http://people.freebsd.org/~phk/
- * ----------------------------------------------------------------------------
- */
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
 
-function Downtown(id_field, id_score, id_hi) {
-  var BOX_WIDTH = 16;
-	var BOX_HEIGHT = 10;
+  <title>bennerhq.com</title>
 
-	var ANIMATION_MAX = 20;
-	var ANIMATION_MIN = 4;
-	var ANIMATION_DELTA = 2;
+  <style type="text/css">
+    body {
+      background-color: white;
+      color: black;
+    }
+    .body {
+    }
 
-	var PCT_MIN = 0.3;
-	var PCT_MAX = 0.6;
-	var PCT_BONUS = 0.07;
+    .logo {
+      font: 61.0px Helvetica;
+      font-weight: bold;
+      font-style: italic;
+      margin-left: 30px;
+      margin-top: 30px;
+      letter-spacing: -4px;
+      cursor: pointer;
+    }
 
-   	this.heartbeat =
-    	this.ship =
-   	this.bomb =
-	this.bonus = null;
+    .contact {
+      font: 17.0px Helvetica;
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      color: darkgray;
 
-        this.animation = 
-	this.dir = 
-	this.score =
-	this.hi =
-	this.count =
-	this.bonus_count = 0;
+      border-top-style: solid;
+      border-top-color: #F0F0F0;
+      border-top-width: 1px;
+      padding-top: 5px;
+    }
+    .name {
+      display: inline-block;
+      font-style: italic;
+      border-right-width: 1px;
+      border-right-style: solid;
+      border-color: #F0F0F0;
+      padding-right: 10px;
+    }
+    #github {
+      display: none;
+    }
+    .phone {
+      display: inline-block;
+      font-style: italic;
+      border-right-width: 1px;
+      border-right-style: solid;
+      border-color: #F0F0F0;
+      padding-right: 10px;
+    }
+    .email {
+      display: inline-block;
+      font-style: italic;
+    }
 
-	this.paused = false;
+    span.high {
+      color: gray;
+    }
+    span.hq {
+      color: #CD0403; /* dark red */
+    }
+    span.hq:hover {
+      cursor: default;
+      color: gray;
+    }
 
-	this.field = document.getElementById(id_field);
-    	this.text_score = document.getElementById(id_score);
-	this.text_hi = document.getElementById(id_hi);
+    #game {
+      position: relative;
+      width: 596px;
+      height: 350px;
+      margin: 0px auto;
+      display: none;
+    }
+    #field {
+      width: 100%;
+      height: 100%;
+    }
+    .info {
+      margin-top: 5px;
+      margin-right: 2px;
+      padding-top: 3px;
+      border-top-style: solid;
+      border-top-width: 1px;
+      border-top-color: #F0F0F0;
+    }
+    .score {
+      float: left;
+      font: 13.0px Helvetica;
+      color: darkgray;
+    }
+    .hi {
+      float: right;
+      font: 13.0px Helvetica;
+      color: darkgray;
+    }
+  </style>
+ 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="downtown.js"></script>
 
-	var _this_shoot_= this;
-	document.onkeypress = function() { _this_shoot_.shoot(); }
-	document.ontouchstart = function() { _this_shoot_.shoot(); }
+  <script>
+    var dn = null;
+    var game = null;
+    var github = null;
 
-	this.start = function() {
-		this.animation = ANIMATION_MAX + ANIMATION_DELTA;
-		this.score = 0;
-		this.next();
-	}
+    function dn_start() {
+      if (dn == null) return;
 
-	this.pauseToggle = function() {
-		if (this.paused) {
-			this.paused = false;
-			this.setHeartbeat(true);
-		}
-		else if (this.heartbeat != null) {
-			this.setHeartbeat(false);
-			this.paused = true;
-		}
-	}
+      game.style.display = 'block';
+      github.style.display = 'inline-block';
 
-	this.isRunning = function() {
-		return this.heartbeat != null;
-	}
+      dn.start();
+    }
 
-	this.isPaused = function() {
-		return this.paused;
-	}
+    function dn_hide() {
+      if (game == null) return;
 
-	this.isActive = function() {
-		return isPaused() || isRunning();
-	}
+      if (game.style.display == 'none') {
+        game.style.display = 'block';
+        github.style.display = 'inline-block';
+ 
+       if (dn.isPaused()) {
+          dn.pauseToggle();
+        }
+      }
+      else {
+        game.style.display = 'none';
+        github.style.display = 'none';
 
-	this.setHeartbeat = function(run) {
-		if (this.heartbeat != null) {
-			clearInterval(this.heartbeat);
-			this.heartbeat = null;
-			this.paused = false;
-		}
+        if (dn.isRunning()) {
+          dn.pauseToggle();
+        }
+      }
+    }
 
-		if (run) {
-			var _this_action_ = this;
-			this.heartbeat = setInterval(function() { _this_action_.action(); }, this.animation);
-		}
-	}
+    function dn_pause() {
+      if (game == null) return;
 
-	var blocks = null;
+      if (game.style.display != 'none') {
+        dn.pauseToggle();
+      }
+    }
 
-	this.next = function() {
-		this.setHeartbeat(false);	
-		this.field.innerHTML = '';	
-		this.bonus = null;
-		this.bonus_count = 0;
-		this.paused = false;
-		this.text_score.innerHTML = this.score;
-		this.text_hi.innerHTML = this.hi;
+    $(document).ready(function() {
+      game = document.getElementById('game');
+      github = document.getElementById('github');
 
-		this.field_width = this.field.clientWidth;
-		this.field_height = this.field.clientHeight;
+      dn = new Downtown('field', 'score', 'hi');
+  });
+  </script>
 
-		var space_min = Math.floor(this.field_height * PCT_MIN);
-    		var space_max = Math.floor(this.field_height * PCT_MAX);
+</head>
+  
+  <body class="bg">
+    <div class="logo">
+      <span onmousedown="dn_hide()">benner</span><span class="hq" onmousedown="dn_start()">hq</span><span onmousedown="dn_pause()">.com</span>
+    </div>
 
-		this.blocks = new Array();
-		this.count = Math.floor(this.field_width / BOX_WIDTH);
-    		for (var i=0; i < this.count; i++) {
-			var h = Math.floor(Math.random() * space_max / BOX_HEIGHT) * BOX_HEIGHT;
-			this.blocks[i] = this.field_height - space_min - h;
+    <div id="game">
+      <div id="field"></div>
+      <div class="info">
+        <div class='score'>Score: <span id='score'></span></div>
+        <div class='hi'>Hi: <span id='hi'></span></div>
+      </div>
+    </div>
 
-			var block = document.createElement('div');
-			block.id = 'b' + i;
-			block.style.left = (i * BOX_WIDTH) + 'px';
-			block.style.top = (this.field_height - 2) + 'px';
-			block.style.width = (BOX_WIDTH - 4) + 'px';
-			block.style.height = '0px';
-			block.style.borderStyle = 'solid';
-			block.style.borderWidth = '1px';
-			block.style.position = 'absolute';
-			block.style.borderColor = 'darkgray';
-			this.field.appendChild(block); 
-		}
-
-		this.dir = 1;
-		this.ship = document.createElement('div');
-		this.ship.id = 'ship';
-		this.ship.style.left = 0;
-		this.ship.style.top = 0;
-		this.ship.style.width = (BOX_WIDTH - 2) + 'px';
-		this.ship.style.height = (BOX_HEIGHT) + 'px';
-		this.ship.style.position = 'absolute';
-		this.ship.style.backgroundColor = '#CD0403';
-		this.field.appendChild(this.ship);
-
-		this.bomb = document.createElement('div');
-		this.bomb.id = 'bomb';
-		this.bomb.style.left = '0px';
-		this.bomb.style.top = '0px';
-		this.bomb.style.width = (BOX_WIDTH - 2) + 'px';
-		this.bomb.style.height = BOX_HEIGHT + 'px';
-		this.bomb.style.position = 'absolute';
-		this.bomb.style.backgroundColor = 'black';
-		this.bomb.style.display = 'none';
-		this.field.appendChild(this.bomb);
-	
-		this.animaton -= ANIMATION_DELTA;
-		if (this.animation < ANIMATION_MIN) {
-			this.animation = ANIMATION_MAX;
-		}
-		this.setHeartbeat(true);
-
-	}
-
-	this.shoot = function() {
-		if (this.bomb.style.display == 'block') return;
-
-		if (this.paused) {
-			this.pauseToggle();
-		}
-		else {	
-			this.bomb.style.display = 'block';
-			this.bomb.style.left = Math.round(parseInt(this.ship.style.left) / BOX_WIDTH) * BOX_WIDTH + 'px';
-			this.bomb.style.top = this.ship.style.top;
-		}
-	}
-
-	this.action = function() {
-		if (this.blocks != null) {
-			for (var i=0; i < this.blocks.length; i++) {
-				var block = document.getElementById('b' + i); 
-				block.style.top = this.blocks[i] + 'px';
-				block.style.height = (this.field_height - this.blocks[i] - 2) + 'px';
-				block.style.transition =
-				block.style.MozYransition =
-				block.style.WebkitTransition =
-				block.style.OTransition = 'top 1s, height 1s';
-			}
-			this.blocks = null;
-		}
-
-		var left = parseInt(this.ship.style.left) + 2 * this.dir;
-		if (left == 0) {
-			this.dir = 1;
-			this.ship.style.top = (parseInt(this.ship.style.top) + BOX_HEIGHT) + 'px';
-		}
-		else if (left + BOX_WIDTH >= this.field_width) {
-			this.dir = -1;
-		}
-		this.ship.style.left = left + 'px';
-
-		var box = document.getElementById('b' + Math.floor(left / BOX_WIDTH));
-		if (parseInt(this.ship.style.top) + BOX_HEIGHT >= parseInt(box.style.top)) {
-			if (this.score > this.hi) {
-				this.text_hi.innerHTML = this.hi = this.score;
-			}
-			this.setHeartbeat(false);
-			return;
-		}
-
-		if (this.bonus != null) {
-			this.bonus_count -= 1;
-			if (this.bomb.style.display != 'block' && this.bonus_count < 1) {
-				this.bonus.style.backgroundColor = 'white';
-				this.bonus = null;
-			}
-		}
-		else if (Math.random() < PCT_BONUS) {
-			var w = Math.floor(this.field_width / BOX_WIDTH);
-			do {
-				this.bonus = document.getElementById('b' + Math.floor(Math.random() * w));
-			}
-			while (this.bonus.style.display == 'none')
-			this.bonus.style.backgroundColor = 'darkgray';
-			this.bonus_count = w * BOX_WIDTH / 2;
-		}
-
-		if (this.bomb.style.display == 'block') { 
-			var top = parseInt(this.bomb.style.top) + 2;
-
-			var block = document.getElementById('b' + Math.floor(parseInt(this.bomb.style.left) / BOX_WIDTH));
-			if (top > parseInt(block.style.top)) {
-				block.style.transition = 
-				block.style.MozYransition = 
-				block.style.WebkitTransition =
-				block.style.OTransition = '';
-				
-				block.style.top = top + 'px';
-				block.style.height = (this.field_height - top - 2) + 'px';
-			}
-
-			if (top + BOX_HEIGHT < this.field_height) {
-				this.bomb.style.top = top + 'px';
-			}
-			else {
-				this.bomb.style.display = 'none';
-
-				if (block.style.display != 'none') {		
-					block.style.display = 'none';
-
-					this.score += 1;
-					if (this.bonus != null && block.id == this.bonus.id) {
-						this.score += this.count;
-					}
-
-					this.count -= 1;
-					if (this.count == 0) {
-						this.score += 5 * Math.floor((this.field_height - top) / BOX_HEIGHT);
-						this.next();
-					}
-				}
-				else {
-					this.score -= Math.floor(this.score / 3);
-				}
-
-				this.text_score.innerHTML = this.score;
-			}
-		}
-	}
-}
+    <div class="contact">
+      <div class="name">
+        jens kaas benner,
+        <a href="http://dk.linkedin.com/in/jenskaasbenner"><span class="high">cv</span></a><span id="github">, <a href="https://github.com/bennerhq"><span class="high">github</span></a></span>
+      </div>
+      <div class="phone">
+         <span class="high">m:</span> +45.20.911.103
+      </div>
+      <div class="email">
+         <span class="high">e:</span> jens@bennerhq.com
+      </div>
+    </div>
+  </body>
+</html>
