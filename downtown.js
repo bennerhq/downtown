@@ -54,8 +54,8 @@ function Downtown(id_game, id_score, id_hi) {
 			this.setHeartbeat(true);
 		}
 		else if (this.heartbeat != null) {
-			this.setHeartbeat(false);
 			this.paused = true;
+			this.setHeartbeat(false);
 		}
 	}
 
@@ -75,7 +75,6 @@ function Downtown(id_game, id_score, id_hi) {
 		if (this.heartbeat != null) {
 			clearInterval(this.heartbeat);
 			this.heartbeat = null;
-			this.paused = false;
 		}
 
 		if (run) {
@@ -98,6 +97,7 @@ function Downtown(id_game, id_score, id_hi) {
     		for (var i=0; i < this.count; i++) {
 			var block = document.createElement('div');
 			block.id = 'b' + i;
+			block.style.position = 'absolute';
 			block.style.left = (i * BOX_WIDTH) + 'px';
 			block.style.top = (this.game.clientHeight - 2) + 'px';
 			block.style.width = (BOX_WIDTH - 4) + 'px';
@@ -105,7 +105,6 @@ function Downtown(id_game, id_score, id_hi) {
 			block.style.borderColor = 'darkgray';
 			block.style.borderStyle = 'solid';
 			block.style.borderWidth = '1px';
-			block.style.position = 'absolute';
 			block.style.transition =
 			block.style.MozTransition =
 			block.style.WebkitTransition =
@@ -116,21 +115,21 @@ function Downtown(id_game, id_score, id_hi) {
 		this.ship = document.createElement('div');
 		this.ship.dir = 1;
 		this.ship.id = 'ship';
+		this.ship.style.position = 'absolute';
 		this.ship.style.left = 0;
 		this.ship.style.top = 0;
 		this.ship.style.width = (BOX_WIDTH - 2) + 'px';
 		this.ship.style.height = (BOX_HEIGHT) + 'px';
-		this.ship.style.position = 'absolute';
 		this.ship.style.backgroundColor = '#CD0403';
 		this.game.appendChild(this.ship);
 
 		this.bomb = document.createElement('div');
 		this.bomb.id = 'bomb';
+		this.bomb.style.position = 'absolute';
 		this.bomb.style.left = '0px';
 		this.bomb.style.top = '0px';
 		this.bomb.style.width = (BOX_WIDTH - 2) + 'px';
 		this.bomb.style.height = BOX_HEIGHT + 'px';
-		this.bomb.style.position = 'absolute';
 		this.bomb.style.backgroundColor = 'black';
 		this.bomb.style.display = 'none';
 		this.game.appendChild(this.bomb);
