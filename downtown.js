@@ -9,7 +9,7 @@
  * ----------------------------------------------------------------------------
  */
 
-function Downtown(id_field, id_score, id_hi) {
+function Downtown(id_game, id_score, id_hi) {
 	var BOX_WIDTH = 16;
 	var BOX_HEIGHT = 10;
 
@@ -27,16 +27,14 @@ function Downtown(id_field, id_score, id_hi) {
 	this.bonus = null;
 
         this.animation = 
-	this.ship_dir = 
 	this.score =
 	this.hi =
-	this.count =
-	this.bonus_count = 0;
+	this.count = 0;
 
 	this.first =
 	this.paused = false;
 
-	this.field = document.getElementById(id_field);
+	this.game = document.getElementById(id_game);
     	this.text_score = document.getElementById(id_score);
 	this.text_hi = document.getElementById(id_hi);
 
@@ -90,22 +88,18 @@ function Downtown(id_field, id_score, id_hi) {
 		this.setHeartbeat(false);	
 
 		this.bonus = null;
-		this.bonus_count = 0;
 		this.paused = false;
-		this.field.innerHTML = '';	
+		this.game.innerHTML = '';	
 		this.text_score.innerHTML = this.score;
 		this.text_hi.innerHTML = this.hi;
 
-		this.field_width = this.field.clientWidth;
-		this.field_height = this.field.clientHeight;
-
 		this.first = true;
-		this.count = Math.floor(this.field_width / BOX_WIDTH);
+		this.count = Math.floor(this.game.clientWidth / BOX_WIDTH);
     		for (var i=0; i < this.count; i++) {
 			var block = document.createElement('div');
 			block.id = 'b' + i;
 			block.style.left = (i * BOX_WIDTH) + 'px';
-			block.style.top = (this.field_height - 2) + 'px';
+			block.style.top = (this.game.clientHeight - 2) + 'px';
 			block.style.width = (BOX_WIDTH - 4) + 'px';
 			block.style.height = '0px';
 			block.style.borderColor = 'darkgray';
@@ -116,11 +110,11 @@ function Downtown(id_field, id_score, id_hi) {
 			block.style.MozTransition =
 			block.style.WebkitTransition =
 			block.style.OTransition = 'top 1s, height 1s';
-			this.field.appendChild(block); 
+			this.game.appendChild(block); 
 		}
 
-		this.ship_dir = 1;
 		this.ship = document.createElement('div');
+		this.ship.dir = 1;
 		this.ship.id = 'ship';
 		this.ship.style.left = 0;
 		this.ship.style.top = 0;
@@ -128,7 +122,7 @@ function Downtown(id_field, id_score, id_hi) {
 		this.ship.style.height = (BOX_HEIGHT) + 'px';
 		this.ship.style.position = 'absolute';
 		this.ship.style.backgroundColor = '#CD0403';
-		this.field.appendChild(this.ship);
+		this.game.appendChild(this.ship);
 
 		this.bomb = document.createElement('div');
 		this.bomb.id = 'bomb';
@@ -139,7 +133,7 @@ function Downtown(id_field, id_score, id_hi) {
 		this.bomb.style.position = 'absolute';
 		this.bomb.style.backgroundColor = 'black';
 		this.bomb.style.display = 'none';
-		this.field.appendChild(this.bomb);
+		this.game.appendChild(this.bomb);
 	
 		this.animaton -= ANIMATION_DELTA;
 		if (this.animation < ANIMATION_MIN) {
@@ -165,26 +159,26 @@ function Downtown(id_field, id_score, id_hi) {
 		if (this.first) {
 			this.first = false;
 
-			var space_min = Math.floor(this.field_height * PCT_MIN);
-	    		var space_max = Math.floor(this.field_height * PCT_MAX);
+			var space_min = Math.floor(this.game.clientHeight * PCT_MIN);
+	    		var space_max = Math.floor(this.game.clientHeight * PCT_MAX);
 
-			for (var i=0; i < Math.floor(this.field_width / BOX_WIDTH); i++) {
+			for (var i=0; i < Math.floor(this.game.clientWidth / BOX_WIDTH); i++) {
 				var h = Math.floor(Math.random() * space_max / BOX_HEIGHT) * BOX_HEIGHT;
-				h = this.field_height - space_min - h;
+				h = this.game.clientHeight - space_min - h;
 
 				var block = document.getElementById('b' + i); 
 				block.style.top = h + 'px';
-				block.style.height = (this.field_height - h - 2) + 'px';
+				block.style.height = (this.game.clientHeight - h - 2) + 'px';
 			}
 		}
 
-		var left = parseInt(this.ship.style.left) + 2 * this.ship_dir;
+		var left = parseInt(this.ship.style.left) + 2 * this.ship.dir;
 		if (left == 0) {
-			this.ship_dir = 1;
+			this.ship.dir = 1;
 			this.ship.style.top = (parseInt(this.ship.style.top) + BOX_HEIGHT) + 'px';
 		}
-		else if (left + BOX_WIDTH >= this.field_width) {
-			this.ship_dir = -1;
+		else if (left + BOX_WIDTH >= this.game.clientWidth) {
+			this.ship.dir = -1;
 		}
 		this.ship.style.left = left + 'px';
 
@@ -198,20 +192,20 @@ function Downtown(id_field, id_score, id_hi) {
 		}
 
 		if (this.bonus != null) {
-			this.bonus_count -= 1;
-			if (this.bomb.style.display != 'block' && this.bonus_count < 1) {
+			this.bonus.expire -= 1;
+			if (this.bomb.style.display != 'block' && this.bonus.expire < 1) {
 				this.bonus.style.backgroundColor = 'white';
 				this.bonus = null;
 			}
 		}
 		else if (Math.random() < PCT_BONUS) {
-			var w = Math.floor(this.field_width / BOX_WIDTH);
+			var w = Math.floor(this.game.clientWidth / BOX_WIDTH);
 			do {
 				this.bonus = document.getElementById('b' + Math.floor(Math.random() * w));
 			}
 			while (this.bonus.style.display == 'none')
 			this.bonus.style.backgroundColor = 'darkgray';
-			this.bonus_count = w * BOX_WIDTH / 2;
+			this.bonus.expire = w * BOX_WIDTH / 2;
 		}
 
 		if (this.bomb.style.display == 'block') { 
@@ -225,10 +219,10 @@ function Downtown(id_field, id_score, id_hi) {
 				block.style.OTransition = '';
 				
 				block.style.top = top + 'px';
-				block.style.height = (this.field_height - top - 2) + 'px';
+				block.style.height = (this.game.clientHeight - top - 2) + 'px';
 			}
 
-			if (top + BOX_HEIGHT < this.field_height) {
+			if (top + BOX_HEIGHT < this.game.clientHeight) {
 				this.bomb.style.top = top + 'px';
 			}
 			else {
@@ -244,7 +238,7 @@ function Downtown(id_field, id_score, id_hi) {
 
 					this.count -= 1;
 					if (this.count == 0) {
-						this.score += 5 * Math.floor((this.field_height - top) / BOX_HEIGHT);
+						this.score += 5 * Math.floor((this.game.clientHeight - top) / BOX_HEIGHT);
 						this.next();
 					}
 				}
