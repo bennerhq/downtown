@@ -103,7 +103,7 @@
   </style>
  
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script src="downtown.js"></script>
+  <script src="js/downtown.js"></script>
 
   <script>
     var dn = null;
@@ -160,7 +160,7 @@
   
   <body class="bg">
     <div class="logo">
-      <span onmousedown="dn_hide()">benner</span><span class="hq" onmousedown="dn_start()">hq</span><span onmousedown="dn_pause()">.com</span>
+      <span onmousedown="dn_hide(); event.stopPropagation();">benner</span><span class="hq" onmousedown="dn_start(); event.stopPropagation();">hq</span><span onmousedown="dn_pause(); event.stopPropagation();">.com</span>
     </div>
 
     <div id="game">
