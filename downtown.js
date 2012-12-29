@@ -41,6 +41,7 @@ function Downtown(id_game, id_score, id_hi) {
 	var _this_shoot_= this;
 	document.onkeypress = function() { _this_shoot_.shoot(); }
 	document.ontouchstart = function() { _this_shoot_.shoot(); }
+	document.onmousedown = function() { _this_shoot_.shoot(); }
 
 	this.start = function() {
 		this.animation = ANIMATION_MAX + ANIMATION_DELTA;
