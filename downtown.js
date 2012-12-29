@@ -8,7 +8,6 @@
  * Origin: http://people.freebsd.org/~phk/
  * ----------------------------------------------------------------------------
  */
-
 function Downtown(id_game, id_score, id_hi) {
 	var BOX_WIDTH = 16;
 	var BOX_HEIGHT = 10;
