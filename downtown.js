@@ -6,6 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return. /benner
  * ----------------------------------------------------------------------------
  */
+
 function Downtown(id_game, id_score, id_hi) {
 	var BOX_WIDTH = 16;
 	var BOX_HEIGHT = 10;
@@ -25,7 +26,9 @@ function Downtown(id_game, id_score, id_hi) {
 
         this.animation = 
 	this.score =
+	this.score_level =
 	this.hi =
+	this.hi_level =
 	this.count = 0;
 
 	this.first =
@@ -43,6 +46,7 @@ function Downtown(id_game, id_score, id_hi) {
 	this.start = function() {
 		this.animation = ANIMATION_MAX + ANIMATION_DELTA;
 		this.score = 0;
+		this.score_level = 0;
 		this.next();
 	}
 
@@ -84,11 +88,12 @@ function Downtown(id_game, id_score, id_hi) {
 	this.next = function() {
 		this.setHeartbeat(false);	
 
+		this.score_level += 1;
 		this.bonus = null;
 		this.paused = false;
 		this.game.innerHTML = '';	
-		this.text_score.innerHTML = this.score;
-		this.text_hi.innerHTML = this.hi;
+		this.text_score.innerHTML = this.score + " / " + this.score_level;
+		this.text_hi.innerHTML = this.hi + " / " + this.hi_level;
 
 		this.first = true;
 		this.count = Math.floor(this.game.clientWidth / BOX_WIDTH);
@@ -182,7 +187,9 @@ function Downtown(id_game, id_score, id_hi) {
 		var box = document.getElementById('b' + Math.floor(left / BOX_WIDTH));
 		if (parseInt(this.ship.style.top) + BOX_HEIGHT >= parseInt(box.style.top)) {
 			if (this.score > this.hi) {
-				this.text_hi.innerHTML = this.hi = this.score;
+				this.hi = this.score;
+				this.hi_level = this.score_level;
+				this.text_hi.innerHTML = this.hi + " / " + this.hi_level;
 			}
 			this.setHeartbeat(false);
 			return;
@@ -240,10 +247,10 @@ function Downtown(id_game, id_score, id_hi) {
 					}
 				}
 				else {
-					this.score -= Math.floor(this.score / 3);
+					this.score -= Math.floor(this.score / 7);
 				}
 
-				this.text_score.innerHTML = this.score;
+				this.text_score.innerHTML = this.score + " / " + this.score_level;
 			}
 		}
 	}
