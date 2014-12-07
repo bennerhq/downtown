@@ -1,5 +1,5 @@
 /*
- *  ----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
  * "THE BEER-WARE LICENSE" (Revision 42):
  * <jens@bennerhq.com> wrote this file. As long as you retain this notice you
  * can do whatever you want with this stuff. If we meet some day, and you think
@@ -116,6 +116,7 @@ function Downtown(id_game, id_score, id_hi) {
 			block.style.MozTransition =
 			block.style.WebkitTransition =
 			block.style.OTransition = 'top 1s, height 1s';
+    		block.style.backgroundColor = 'white';
 			this.game.appendChild(block);
 		}
 
@@ -128,6 +129,7 @@ function Downtown(id_game, id_score, id_hi) {
 		this.ship.style.width = (BOX_WIDTH - 2) + 'px';
 		this.ship.style.height = (BOX_HEIGHT) + 'px';
 		this.ship.style.backgroundColor = '#CD0403';
+		this.ship.style.border ='white 1px solid'
 		this.game.appendChild(this.ship);
 
 		this.bomb = document.createElement('div');
@@ -259,3 +261,4 @@ function Downtown(id_game, id_score, id_hi) {
 		}
 	}
 }
+
